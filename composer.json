@@ -1,0 +1,20 @@
+{
+  "name":              "mkardakov/mail-reader",
+  "type":              "library",
+  "description":       "PHP Library to read data from email inboxes",
+  "keywords": [
+    "php",
+    "email",
+    "imap",
+    "inbox"
+  ],
+  "require": {
+    "php": ">=5.5",
+    "ext-imap": "*"
+  },
+  "autoload":          {
+    "psr-4": {
+      "Mails\\": "src/"
+    }
+  }
+}
