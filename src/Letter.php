@@ -9,6 +9,7 @@
 namespace Mails;
 
 use Mails\Headers\HeadersInterface;
+use Mails\Imap\Sections\ImapBody;
 
 /**
  * Class Letter
@@ -31,9 +32,10 @@ class Letter
      * Letter constructor.
      * @param HeadersInterface $headers
      */
-    public function __construct(HeadersInterface $headers)
+    public function __construct(HeadersInterface $headers, ImapBody $body)
     {
         $this->headers = $headers;
+        $this->body = $body;
     }
 
     /**

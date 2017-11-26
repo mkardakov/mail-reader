@@ -9,19 +9,31 @@
 namespace Mails\Imap;
 
 use Mails\Headers\HeadersInterface;
+use Mails\Imap\Sections\ImapBody;
 use Mails\Imap\Sections\ImapHeaders;
+use Mails\Imap\Sections\Structure\BodyStructure;
 use Mails\Letter;
 use Mails\MailerReaderInterface;
 use Mails\Search\SearchCriteria;
 
-
+/**
+ * Class Mailer
+ * @package Mails\Imap
+ */
 class Mailer implements MailerReaderInterface
 {
 
     /**
+     * Client config
      * @var Config
      */
     private $config;
+
+    /**
+     * resource wrapper
+     * @var Connection
+     */
+    private $connection;
 
     /**
      * Mailer constructor.
@@ -30,6 +42,7 @@ class Mailer implements MailerReaderInterface
     public function __construct(Config $config)
     {
         $this->config = $config;
+        $this->connection = new Connection($config);
     }
 
 
@@ -45,7 +58,7 @@ class Mailer implements MailerReaderInterface
             foreach ($rawData as $letterNum) {
                 $headers = $this->retrieveEmailHeaders($letterNum);
                 $body = $this->retrieveEmailBody($letterNum);
-                yield (new Letter($headers))->setBody($body);
+                yield new Letter($headers, $body);
             }
         }
         return [];
@@ -58,8 +71,10 @@ class Mailer implements MailerReaderInterface
     private function retrieveEmailBody($letterNum)
     {
         $connect = $this->getConnection();
-        $body = imap_body($connect, $letterNum, FT_UID);
-        return !empty($body) ? imap_base64($body) : '';
+        $structure = new BodyStructure(imap_fetchstructure($connect, $letterNum, FT_UID));
+        $body = new ImapBody($this->connection, $structure, $letterNum);
+
+        return $body;
     }
 
     /**
@@ -92,14 +107,7 @@ class Mailer implements MailerReaderInterface
      */
     private function getConnection()
     {
-        static $res;
-        if (!is_resource($res)) {
-            $res = imap_open($this->config->serialize(), $this->config->getUser(), $this->config->getPass());
-            if (!is_resource($res)) {
-                throw new \Exception('Can`t connect to mail server. Please recheck your credentials');
-            }
-        }
-        return $res;
+        return $this->connection->getDescriptor();
     }
 
 }

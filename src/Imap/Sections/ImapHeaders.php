@@ -10,12 +10,13 @@ namespace Mails\Imap\Sections;
 
 use Mails\Headers\HeadersInterface;
 use Mails\Headers\NullableHeaders;
+use Mails\Helpers\Nullable;
 
 /**
  * Class ImapHeaders
  * @package Mails\Services\Mailer\Imap\Sections
  */
-final class ImapHeaders implements HeadersInterface
+final class ImapHeaders implements HeadersInterface, Nullable
 {
 
     /**
@@ -91,5 +92,13 @@ final class ImapHeaders implements HeadersInterface
     public function getTo()
     {
         return $this->getIfExist('toaddress');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNull()
+    {
+        return false;
     }
 }
