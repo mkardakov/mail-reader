@@ -1,16 +1,25 @@
 {
   "name":              "mkardakov/mail-reader",
   "type":              "library",
-  "description":       "PHP Library to read data from email inboxes",
+  "license":            "MIT",
+  "description":       "PHP Library to read data from email inboxes using IMAP protocol",
   "keywords": [
     "php",
     "email",
     "imap",
     "inbox"
   ],
+  "authors": [
+    {
+      "name": "Michael Kardakov",
+      "email": "work.zjiodeu@gmail.com",
+      "role": "Software Developer at Provectus"
+    }
+  ],
   "require": {
     "php": ">=5.5",
-    "ext-imap": "*"
+    "ext-imap": "*",
+    "ext-iconv": "*"
   },
   "autoload":          {
     "psr-4": {

@@ -58,7 +58,8 @@ class BodyStructure
         if (property_exists($this->structure, 'parts')) {
             return (array)$this->structure->parts;
         }
-        return [];
+        $this->structure->parts = [clone $this->structure];
+        return $this->getParts();
     }
 
 }
