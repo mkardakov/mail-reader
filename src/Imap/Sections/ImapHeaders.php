@@ -64,26 +64,21 @@ final class ImapHeaders implements HeadersInterface, Nullable
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getFrom()
     {
-        return $this->getIfExist('fromaddress');
+        $from = $this->getIfExist('fromaddress');
+        return $this->isStringMimeDecoded($from) ? $this->decodeMimeHeader($from) : $from;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getSubject()
     {
-        $subject = '';
-        $subjectElements = imap_mime_header_decode($this->getIfExist('Subject'));
-        if (!empty($subjectElements)) {
-            foreach($subjectElements as $element) {
-                $subject .= $element->text;
-            }
-        }
-        return $subject;
+        $subject = $this->getIfExist('Subject');
+        return $this->isStringMimeDecoded($subject) ? $this->decodeMimeHeader($subject) : $subject;
     }
 
     /**
@@ -101,4 +96,19 @@ final class ImapHeaders implements HeadersInterface, Nullable
     {
         return false;
     }
+
+    /**
+     * @param $string
+     * @return string
+     */
+    private function decodeMimeHeader($string)
+    {
+        return iconv_mime_decode($string, ICONV_MIME_DECODE_CONTINUE_ON_ERROR, "UTF-8");
+    }
+
+    private function isStringMimeDecoded($string)
+    {
+        return preg_match('/^=\?/', $string);
+    }
+
 }
