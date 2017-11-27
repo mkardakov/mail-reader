@@ -27,6 +27,7 @@ $criteria->setFrom('online@hotmail.com')->setBody('Hi, ');
 // Get \Generator
 $emails = $mailer->getInbox($criteria);
 foreach ($emails as $mail) {
-    var_dump($mail);
+    echo $letter->getHeaders()->getSubject();
+    echo $letter->getBody()->getHTML();
 }
 ```
