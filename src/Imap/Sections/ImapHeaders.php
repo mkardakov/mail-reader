@@ -11,6 +11,8 @@ namespace Mails\Imap\Sections;
 use Mails\Headers\HeadersInterface;
 use Mails\Headers\NullableHeaders;
 use Mails\Helpers\Nullable;
+use Mails\Helpers\Traits\HeadersParser;
+use Mails\Imap\Sections\Structure\From;
 
 /**
  * Class ImapHeaders
@@ -19,6 +21,7 @@ use Mails\Helpers\Nullable;
 final class ImapHeaders implements HeadersInterface, Nullable
 {
 
+    use HeadersParser;
     /**
      * @var \StdClass
      */
@@ -64,12 +67,12 @@ final class ImapHeaders implements HeadersInterface, Nullable
     }
 
     /**
-     * @return string
+     * @return From
      */
     public function getFrom()
     {
         $from = $this->getIfExist('fromaddress');
-        return $this->isStringMimeDecoded($from) ? $this->decodeMimeHeader($from) : $from;
+        return $this->parseFrom($from);
     }
 
     /**
@@ -95,20 +98,6 @@ final class ImapHeaders implements HeadersInterface, Nullable
     public function isNull()
     {
         return false;
-    }
-
-    /**
-     * @param $string
-     * @return string
-     */
-    private function decodeMimeHeader($string)
-    {
-        return iconv_mime_decode($string, ICONV_MIME_DECODE_CONTINUE_ON_ERROR, "UTF-8");
-    }
-
-    private function isStringMimeDecoded($string)
-    {
-        return preg_match('/^=\?/', $string);
     }
 
 }
