@@ -35,7 +35,7 @@ class From implements Nullable
      * @param $title
      * @param $email
      */
-    public function __construct($title, $email)
+    public function __construct($title = '', $email = '')
     {
         $this->title = $title;
         $this->email = $email;

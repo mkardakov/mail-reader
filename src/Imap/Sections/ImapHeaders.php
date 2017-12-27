@@ -59,11 +59,12 @@ final class ImapHeaders implements HeadersInterface, Nullable
     }
 
     /**
-     * @return mixed
+     * @return \DateTime|false
      */
     public function getDate()
     {
-        return $this->getIfExist('Date');
+        $date = $this->getIfExist('Date');
+        return \DateTime::createFromFormat('D# d F Y+', $date);
     }
 
     /**
@@ -81,7 +82,7 @@ final class ImapHeaders implements HeadersInterface, Nullable
     public function getSubject()
     {
         $subject = $this->getIfExist('Subject');
-        return $this->isStringMimeDecoded($subject) ? $this->decodeMimeHeader($subject) : $subject;
+        return $this->decodeMimeHeader($subject);
     }
 
     /**
