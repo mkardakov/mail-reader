@@ -11,6 +11,10 @@ namespace Mails\Headers;
 
 use Mails\Imap\Sections\Structure\From;
 
+/**
+ * Interface HeadersInterface
+ * @package Mails\Headers
+ */
 interface HeadersInterface
 {
 
@@ -24,7 +28,13 @@ interface HeadersInterface
      */
     public function getFrom();
 
+    /**
+     * @return string
+     */
     public function getSubject();
 
+    /**
+     * @return string
+     */
     public function getTo();
 }

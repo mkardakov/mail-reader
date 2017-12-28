@@ -15,12 +15,24 @@ namespace Mails\Sort;
 class Sorter
 {
 
+    /**
+     * ascending sort flag
+     */
     const ASC = 0;
 
+    /**
+     * reverse sort flah
+     */
     const DESC = 1;
 
+    /**
+     * @var int
+     */
     protected $direction;
 
+    /**
+     * @var int
+     */
     protected $sortParam = SORTARRIVAL;
 
     /**
