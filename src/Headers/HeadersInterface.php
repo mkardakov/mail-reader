@@ -9,14 +9,32 @@
 namespace Mails\Headers;
 
 
+use Mails\Imap\Sections\Structure\From;
+
+/**
+ * Interface HeadersInterface
+ * @package Mails\Headers
+ */
 interface HeadersInterface
 {
 
+    /**
+     * @return \DateTime
+     */
     public function getDate();
 
+    /**
+     * @return From
+     */
     public function getFrom();
 
+    /**
+     * @return string
+     */
     public function getSubject();
 
+    /**
+     * @return string
+     */
     public function getTo();
 }

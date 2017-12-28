@@ -11,6 +11,8 @@ namespace Mails\Imap\Sections;
 use Mails\Headers\HeadersInterface;
 use Mails\Headers\NullableHeaders;
 use Mails\Helpers\Nullable;
+use Mails\Helpers\Traits\HeadersParser;
+use Mails\Imap\Sections\Structure\From;
 
 /**
  * Class ImapHeaders
@@ -19,6 +21,7 @@ use Mails\Helpers\Nullable;
 final class ImapHeaders implements HeadersInterface, Nullable
 {
 
+    use HeadersParser;
     /**
      * @var \StdClass
      */
@@ -56,20 +59,21 @@ final class ImapHeaders implements HeadersInterface, Nullable
     }
 
     /**
-     * @return mixed
+     * @return \DateTime|false
      */
     public function getDate()
     {
-        return $this->getIfExist('Date');
+        $date = $this->getIfExist('Date');
+        return \DateTime::createFromFormat('D# d F Y+', $date);
     }
 
     /**
-     * @return string
+     * @return From
      */
     public function getFrom()
     {
         $from = $this->getIfExist('fromaddress');
-        return $this->isStringMimeDecoded($from) ? $this->decodeMimeHeader($from) : $from;
+        return $this->parseFrom($from);
     }
 
     /**
@@ -78,7 +82,7 @@ final class ImapHeaders implements HeadersInterface, Nullable
     public function getSubject()
     {
         $subject = $this->getIfExist('Subject');
-        return $this->isStringMimeDecoded($subject) ? $this->decodeMimeHeader($subject) : $subject;
+        return $this->decodeMimeHeader($subject);
     }
 
     /**
@@ -95,20 +99,6 @@ final class ImapHeaders implements HeadersInterface, Nullable
     public function isNull()
     {
         return false;
-    }
-
-    /**
-     * @param $string
-     * @return string
-     */
-    private function decodeMimeHeader($string)
-    {
-        return iconv_mime_decode($string, ICONV_MIME_DECODE_CONTINUE_ON_ERROR, "UTF-8");
-    }
-
-    private function isStringMimeDecoded($string)
-    {
-        return preg_match('/^=\?/', $string);
     }
 
 }

@@ -15,6 +15,7 @@ use Mails\Imap\Sections\Structure\BodyStructure;
 use Mails\Letter;
 use Mails\MailerReaderInterface;
 use Mails\Search\SearchCriteria;
+use Mails\Sort\Sorter;
 
 /**
  * Class Mailer
@@ -50,11 +51,14 @@ class Mailer implements MailerReaderInterface
      * @param SearchCriteria|null $criteria
      * @return \Generator|Letter[]
      */
-    final public function getInbox(SearchCriteria $criteria = null)
+    final public function getInbox(SearchCriteria $criteria = null, Sorter $sorter = null)
     {
         $connect = $this->getConnection();
+        if (is_null($sorter)) {
+            $sorter = $this->getDefaultSorter();
+        }
         $queryString = (new ImapCriteriaDecorator($criteria))->getQuery();
-        if (false !== ($rawData = imap_search($connect, $queryString, SE_UID))) {
+        if (false !== ($rawData = imap_sort($connect, $sorter->getSortParam(), $sorter->getDirection(), SE_UID, $queryString))) {
             foreach ($rawData as $letterNum) {
                 $headers = $this->retrieveEmailHeaders($letterNum);
                 $body = $this->retrieveEmailBody($letterNum);
@@ -108,6 +112,15 @@ class Mailer implements MailerReaderInterface
     private function getConnection()
     {
         return $this->connection->getDescriptor();
+    }
+
+    /**
+     * @return Sorter
+     */
+    private function getDefaultSorter()
+    {
+        $defaultSorter = (new Sorter())->setDirection(Sorter::DESC);
+        return $defaultSorter;
     }
 
 }

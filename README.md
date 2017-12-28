@@ -24,8 +24,13 @@ $mailer = (new \Mails\MailKit())->create($config);
 // Create filter for inbox letters
 $criteria = new \Mails\Search\SearchCriteria();
 $criteria->setFrom('online@hotmail.com')->setBody('Hi, ');
+// Create sort rule
+// Sort Params must be valid constants from imap extension
+//http://php.net/manual/ru/function.imap-sort.php#refsect1-function.imap-sort-parameters
+ $sort = new \Mails\Sort\Sorter();
+ $sort->setDirection(\Mails\Sort\Sorter::ASC)->setSortParam(SORTARRIVAL);
 // Get \Generator
-$emails = $mailer->getInbox($criteria);
+$emails = $mailer->getInbox($criteria, $sort);
 foreach ($emails as $mail) {
     echo $letter->getHeaders()->getSubject();
     echo $letter->getBody()->getHTML();
